@@ -1,4 +1,4 @@
 include:
-  - board: nice60
-  - board: nice60
+  - board: nice60//zmk
+  - board: nice60//zmk
     shield: settings_reset
