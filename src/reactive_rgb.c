@@ -42,8 +42,8 @@ static void draw_handler(struct k_work *work)
     k_spinlock_key_t key = k_spin_lock(&rgb_lock);
     for (unsigned int i = 0; i < NUM_PIXELS; ++i) {
         if (expiry_ms[i] > now) {
-            /* Deliberately dim: less current, better visibility in the dark. */
-            pixels[i] = (struct led_rgb){ .r = 0, .g = 180, .b = 55 };
+            /* Warm white illumination, one-second afterglow. */
+            pixels[i] = (struct led_rgb){ .r = 255, .g = 230, .b = 196 };
             if (expiry_ms[i] < next) next = expiry_ms[i];
         } else {
             pixels[i] = (struct led_rgb){0};
@@ -76,10 +76,14 @@ static int event_listener(const zmk_event_t *eh)
     if (!event->state || event->position >= sizeof(nice60_region_for_position)) {
         return ZMK_EV_EVENT_BUBBLE;
     }
-    const uint8_t led = nice60_region_for_position[event->position];
-    if (led >= NUM_PIXELS) return ZMK_EV_EVENT_BUBBLE;
+    /* Every key press illuminates all 12 LEDs. */
     k_spinlock_key_t key = k_spin_lock(&rgb_lock);
-    expiry_ms[led] = k_uptime_get() + AFTERGLOW_MS;
+    const int64_t deadline = k_uptime_get() + AFTERGLOW_MS;
+
+    for (unsigned int i = 0; i < NUM_PIXELS; ++i) {
+        expiry_ms[i] = deadline;
+    }
+
     k_spin_unlock(&rgb_lock, key);
     (void)k_work_reschedule(&draw_work, K_NO_WAIT);
     return ZMK_EV_EVENT_BUBBLE;
