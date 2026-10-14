@@ -1,0 +1,9 @@
+
+# nice!60 reactive regional RGB lighting
+# Custom Zephyr module for ZMK
+
+name: nice60-reactive-rgb
+
+build:
+  cmake: zephyr
+  kconfig: zephyr/Kconfig
