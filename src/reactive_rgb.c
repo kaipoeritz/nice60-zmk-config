@@ -12,6 +12,7 @@
 #include <zephyr/init.h>
 #include <zephyr/kernel.h>
 #include <zephyr/logging/log.h>
+#include <drivers/ext_power.h>
 #include <zmk/event_manager.h>
 #include <zmk/events/position_state_changed.h>
 #include "led_regions.h"
@@ -28,6 +29,7 @@ BUILD_ASSERT(sizeof(nice60_region_for_position) == 61, "Map expects 61 key posit
 BUILD_ASSERT(!IS_ENABLED(CONFIG_ZMK_RGB_UNDERGLOW), "Disable legacy RGB animation engine");
 
 static const struct device *const strip = DEVICE_DT_GET(STRIP_NODE);
+static const struct device *const rgb_power = DEVICE_DT_GET(DT_INST(0, zmk_ext_power_generic));
 static struct led_rgb pixels[NUM_PIXELS];
 static int64_t expiry_ms[NUM_PIXELS];
 static struct k_spinlock rgb_lock;
@@ -48,7 +50,18 @@ static void draw_handler(struct k_work *work)
         }
     }
     k_spin_unlock(&rgb_lock, key);
+    if (next != INT64_MAX) {
+        int power_err = ext_power_enable(rgb_power);
+        if (power_err) {
+            LOG_ERR("RGB power enable failed: %d", power_err);
+            return;
+        }
+        k_msleep(2);
+    }
     int err = led_strip_update_rgb(strip, pixels, NUM_PIXELS);
+    if (next == INT64_MAX) {
+        (void)ext_power_disable(rgb_power);
+    }
     if (err) LOG_WRN("WS2812 update failed: %d", err);
     if (next != INT64_MAX) {
         int64_t remaining = next - k_uptime_get();
@@ -83,6 +96,10 @@ static int reactive_rgb_init(void)
     }
     k_work_init_delayable(&draw_work, draw_handler);
     memset(pixels, 0, sizeof(pixels));
-    return led_strip_update_rgb(strip, pixels, NUM_PIXELS);
+    if (!device_is_ready(rgb_power)) {
+        LOG_ERR("RGB power device not ready");
+        return -ENODEV;
+    }
+    return ext_power_disable(rgb_power);
 }
 SYS_INIT(reactive_rgb_init, APPLICATION, CONFIG_APPLICATION_INIT_PRIORITY);
