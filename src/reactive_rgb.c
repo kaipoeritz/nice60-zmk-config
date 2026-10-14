@@ -43,7 +43,7 @@ static void draw_handler(struct k_work *work)
     for (unsigned int i = 0; i < NUM_PIXELS; ++i) {
         if (expiry_ms[i] > now) {
             /* Deliberately dim: less current, better visibility in the dark. */
-            pixels[i] = (struct led_rgb){ .r = 0, .g = 14, .b = 8 };
+            pixels[i] = (struct led_rgb){ .r = 0, .g = 180, .b = 55 };
             if (expiry_ms[i] < next) next = expiry_ms[i];
         } else {
             pixels[i] = (struct led_rgb){0};
