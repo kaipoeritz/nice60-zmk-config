@@ -1,13 +1,18 @@
-
-# nice!60 reactive regional RGB lighting
+# nice!60 regional reactive RGB - independent Zephyr module switch
+# The old "depends on ZMK" was intentionally removed: there is no
+# general CONFIG_ZMK symbol in the ZMK app/Kconfig we inspected.
 
 config NICE60_REACTIVE_RGB
-    bool "Enable nice!60 reactive RGB lighting"
+    bool "Reactive per-region nice!60 RGB lighting"
     default n
-    depends on ZMK
+    depends on DT_HAS_WORLDSEMI_WS2812_SPI_ENABLED
+    select LED_STRIP
     help
-      Enable custom per-region RGB lighting triggered
-      by physical key presses.
+      Drive the twelve on-board RGB LEDs from physical key events.
+      Requires the legacy ZMK underglow engine to be disabled.
 
-      Each LED turns off after a configurable
-      afterglow period.
+config NICE60_REACTIVE_RGB_AFTERGLOW_MS
+    int "Reactive RGB afterglow (milliseconds)"
+    depends on NICE60_REACTIVE_RGB
+    range 100 10000
+    default 1000

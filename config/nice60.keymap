@@ -39,10 +39,19 @@
 
             bindings = <
                 &bt BT_CLR    &kp F1   &kp F2   &kp F3   &kp F4          &kp F5          &kp F6          &kp F7          &kp F8       &kp F9  &kp F10  &kp F11  &kp F12  &kp DEL
-                &bt BT_SEL 0  &trans   &kp UP   &kp END  &rgb_ug RGB_HUI &rgb_ug RGB_SAI &rgb_ug RGB_BRI &kp PG_UP      &trans       &trans  &trans    &trans    &trans   &trans
-                &bt BT_SEL 1  &kp LEFT &kp DOWN &kp RIGHT &rgb_ug RGB_HUD &rgb_ug RGB_SAD &kp HOME       &kp PG_DN      &trans       &trans  &trans    &trans    &rgb_ug RGB_EFF
+                // HISTORIC ZMK RGB CONTROLS (disabled because the regional controller owns the WS2812 strip).
+                // Restore only if custom RGB is disabled and CONFIG_ZMK_RGB_UNDERGLOW=y again:
+                // &bt BT_SEL 0  &trans   &kp UP   &kp END  &rgb_ug RGB_HUI &rgb_ug RGB_SAI &rgb_ug RGB_BRI &kp PG_UP      &trans       &trans  &trans    &trans    &trans   &trans
+                &bt BT_SEL 0  &trans   &kp UP   &kp END  &trans &trans &trans &kp PG_UP      &trans       &trans  &trans    &trans    &trans   &trans
+                // HISTORIC ZMK RGB CONTROLS (disabled because the regional controller owns the WS2812 strip).
+                // Restore only if custom RGB is disabled and CONFIG_ZMK_RGB_UNDERGLOW=y again:
+                // &bt BT_SEL 1  &kp LEFT &kp DOWN &kp RIGHT &rgb_ug RGB_HUD &rgb_ug RGB_SAD &kp HOME       &kp PG_DN      &trans       &trans  &trans    &trans    &rgb_ug RGB_EFF
+                &bt BT_SEL 1  &kp LEFT &kp DOWN &kp RIGHT &trans &trans &kp HOME       &kp PG_DN      &trans       &trans  &trans    &trans    &trans
                 &bt BT_SEL 2  &trans   &trans   &trans   &trans          &trans          &trans          &trans          &trans       &trans  &trans    &trans
-                &bt BT_SEL 3  &trans   &trans   &rgb_ug RGB_TOG                            &kp PSCRN                        &trans       &trans  &kp DEL
+                // HISTORIC ZMK RGB CONTROLS (disabled because the regional controller owns the WS2812 strip).
+                // Restore only if custom RGB is disabled and CONFIG_ZMK_RGB_UNDERGLOW=y again:
+                // &bt BT_SEL 3  &trans   &trans   &rgb_ug RGB_TOG                            &kp PSCRN                        &trans       &trans  &kp DEL
+                &bt BT_SEL 3  &trans   &trans   &trans                            &kp PSCRN                        &trans       &trans  &kp DEL
             >;
         };
     };
