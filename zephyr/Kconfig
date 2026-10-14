@@ -1,0 +1,13 @@
+
+# nice!60 reactive regional RGB lighting
+
+config NICE60_REACTIVE_RGB
+    bool "Enable nice!60 reactive RGB lighting"
+    default n
+    depends on ZMK
+    help
+      Enable custom per-region RGB lighting triggered
+      by physical key presses.
+
+      Each LED turns off after a configurable
+      afterglow period.
